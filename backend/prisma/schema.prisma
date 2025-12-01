@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Lutador {
+  id        Int    @id @default(autoincrement())
+  nome      String
+  pais      String
+  categoria String
+  lutasA    Luta[] @relation("LutadorA")
+  lutasB    Luta[] @relation("LutadorB")
+}
+
+model Card {
+  id    Int      @id @default(autoincrement())
+  nome  String
+  data  DateTime
+  lutas Luta[]   @relation("CardLutas")
+}
+
+model Luta {
+  id         Int       @id @default(autoincrement())
+  peso       String?
+  rounds     Int?
+  data       DateTime?
+  resultado  String
+  lutadorAId Int
+  lutadorBId Int
+  cardId     Int
+  lutadorA   Lutador   @relation("LutadorA", fields: [lutadorAId], references: [id])
+  lutadorB   Lutador   @relation("LutadorB", fields: [lutadorBId], references: [id])
+  card       Card      @relation("CardLutas", fields: [cardId], references: [id])
+}
