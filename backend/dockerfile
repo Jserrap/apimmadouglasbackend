@@ -11,7 +11,7 @@ COPY prisma ./prisma
 COPY tsconfig.json ./
 COPY src ./src
 
-# generate prisma client
+# generate prisma client (requires prisma package as devDependency or installed globally)
 RUN npx prisma generate
 
 # build
@@ -25,13 +25,8 @@ ENV NODE_ENV=production
 COPY package*.json ./
 RUN npm ci --only=production
 
-# Copy prisma files for migrations/generation at runtime
-COPY --from=build /app/prisma ./prisma
 COPY --from=build /app/dist ./dist
-COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=build /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=build /app/node_modules ./node_modules
 
 EXPOSE 3000
-
-# Run migrations before starting the app
-CMD npx prisma migrate deploy && node dist/server.js
+CMD ["node", "dist/server.js"]
