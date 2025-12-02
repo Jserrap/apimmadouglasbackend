@@ -11,24 +11,42 @@ const app = express();
 // ----------------------
 // 🔥 CORS Configuration
 // ----------------------
-const FRONT_ORIGIN = process.env.FRONT_ORIGIN || "https://apimmadouglasfrontend-c5736.vercel.app";
+const allowedOrigins = [
+  "https://apimmadouglasfrontend-c5736.vercel.app",
+  "https://apimmadouglasfrontend-aiem80pt-joaos-projects-3bdc5736.vercel.app",
+  "http://localhost:3000",
+  "http://localhost:5173"
+];
 
 app.use(
   cors({
-    origin: FRONT_ORIGIN,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   })
 );
 
-// Preflight handler
+// Additional CORS headers
 app.use((req, res, next) => {
-  if (req.method === "OPTIONS") {
-    res.setHeader("Access-Control-Allow-Origin", FRONT_ORIGIN);
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Access-Control-Allow-Credentials", "true");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
     res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+  }
+  
+  if (req.method === "OPTIONS") {
     return res.sendStatus(204);
   }
   next();
@@ -48,3 +66,14 @@ app.use("/api/cards", cardRouter);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 export default app;
+```
+
+**Also, make sure:**
+
+1. You've deployed this updated code to Onrender
+2. Your Onrender backend is actually running (check the logs)
+3. You're using the correct backend URL in your frontend (with double `m`)
+
+If it still doesn't work, the issue might be that Onrender needs environment variables set. Go to your Onrender dashboard and add:
+```
+FRONT_ORIGIN=https://apimmadouglasfrontend-c5736.vercel.app
