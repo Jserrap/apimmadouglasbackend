@@ -12,6 +12,7 @@ const app = express();
 // 🔥 CORS Configuration
 // ----------------------
 const allowedOrigins = [
+  "https://apimmadouglasbackend.onrender.com", // 🔥 Adicionar a URL do backend do Render
   "https://apimmadouglasfrontend-c5736.vercel.app",
   "http://localhost:3000"
 ];
@@ -21,9 +22,9 @@ app.use(
     origin: function (origin, callback) {
       // Allow no origin (postman, curl, etc), production frontend, localhost, and any Vercel preview deploy
       if (
-        !origin ||
+        ! origin ||
         allowedOrigins.includes(origin) ||
-        /^https:\/\/apimmadouglasfrontend.*\.vercel\.app$/.test(origin)
+        /^https:\/\/apimmadouglasfrontend.*\. vercel\.app$/.test(origin)
       ) {
         callback(null, true);
       } else {
@@ -40,7 +41,7 @@ app.use(
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("API MMA rodando! Veja a documentação em /api-docs");
+  res.send("API MMA rodando!  Veja a documentação em /api-docs");
 });
 
 // Routes
