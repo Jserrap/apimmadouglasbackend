@@ -12,9 +12,9 @@ const app = express();
 // 🔥 CORS Configuration
 // ----------------------
 const allowedOrigins = [
-  "https://apimmadouglasbackend.onrender. com", // 🔥 Adicionar a URL do backend do Render
+  "https://apimmadouglasbackend.onrender.com", // 🔥 Adicionar a URL do backend do Render
   "https://apimmadouglasfrontend-c5736.vercel.app",
-  "https://apimmadouglasbackend-onrender-com. onrender.com", // 🔥 Domínio adicional do Render
+  "https://apimmadouglasbackend-onrender-com.onrender.com", // 🔥 Domínio adicional do Render
   "http://localhost:3000"
 ];
 
@@ -23,9 +23,11 @@ app.use(
     origin: function (origin, callback) {
       // Allow no origin (postman, curl, etc), production frontend, localhost, and any Vercel preview deploy
       if (
-        ! origin ||
+        !origin ||
         allowedOrigins.includes(origin) ||
-        /^https:\/\/apimmadouglasfrontend.*\. vercel\.app$/.test(origin)
+        /^https:\/\/apimmadouglasfrontend.*\.vercel\.app$/.test(origin) ||
+        // allow any subdomain on onrender.com (e.g., <name>.onrender.com)
+        /^https?:\/\/[A-Za-z0-9-]+\.onrender\.com$/.test(origin)
       ) {
         callback(null, true);
       } else {
