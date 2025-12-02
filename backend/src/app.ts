@@ -4,15 +4,14 @@ import lutaRouter from "./routes/luta_routes";
 import cardRouter from "./routes/card_routes";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./swagger";
+import cors from "cors";
 
 const app = express();
 
 // ----------------------
-// 🔥 CORS DEVE VIR AQUI
+// 🔥 CORS Configuration
 // ----------------------
-import cors from "cors";
-
-const FRONT_ORIGIN = process.env.FRONT_ORIGIN || "https://apimmadouglasfrontend.vercel.app/";
+const FRONT_ORIGIN = process.env.FRONT_ORIGIN || "https://apimadouglasfrontend-c5736.vercel.app";
 
 app.use(
   cors({
@@ -23,7 +22,7 @@ app.use(
   })
 );
 
-// Preflight seguro (sem usar "*", que quebra path-to-regexp)
+// Preflight handler
 app.use((req, res, next) => {
   if (req.method === "OPTIONS") {
     res.setHeader("Access-Control-Allow-Origin", FRONT_ORIGIN);
@@ -36,14 +35,13 @@ app.use((req, res, next) => {
 });
 
 // -------------------------
-
 app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("API MMA rodando! Veja a documentação em /api-docs");
 });
 
-// SUAS ROTAS NORMALMENTE
+// Routes
 app.use("/api/lutadores", lutadorRouter);
 app.use("/api/lutas", lutaRouter);
 app.use("/api/cards", cardRouter);
