@@ -23,7 +23,7 @@ app.use(
       if (
         ! origin ||
         allowedOrigins.includes(origin) ||
-        /^https:\/\/apimmadouglasfronten.*\. vercel\.app$/.test(origin)
+        /^https:\/\/apimmadouglasfrontend.*\. vercel\.app$/.test(origin)
       ) {
         callback(null, true);
       } else {
