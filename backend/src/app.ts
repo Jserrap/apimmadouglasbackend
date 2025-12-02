@@ -11,28 +11,30 @@ const app = express();
 // ----------------------
 // 🔥 CORS Configuration
 // ----------------------
-const FRONT_ORIGIN = process.env.FRONT_ORIGIN || "https://apimmadouglasfrontend-c5736.vercel.app";
+const allowedOrigins = [
+  "https://apimmadouglasfrontend-c5736.vercel.app",
+  "http://localhost:3000"
+];
 
 app.use(
   cors({
-    origin: FRONT_ORIGIN,
+    origin: function (origin, callback) {
+      // Allow no origin (postman, curl, etc), production frontend, localhost, and any Vercel preview deploy
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        /^https:\/\/apimmadouglasfrontend.*\.vercel\.app$/.test(origin)
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   })
 );
-
-// Preflight handler
-app.use((req, res, next) => {
-  if (req.method === "OPTIONS") {
-    res.setHeader("Access-Control-Allow-Origin", FRONT_ORIGIN);
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
-    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
-    return res.sendStatus(204);
-  }
-  next();
-});
 
 // -------------------------
 app.use(express.json());
