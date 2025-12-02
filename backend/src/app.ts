@@ -8,20 +8,16 @@ import cors from "cors";
 
 const app = express();
 
-// --------------------------------------------------------------------
-// CORS — whitelist estável para aceitar todos os domínios do frontend
-// --------------------------------------------------------------------
 const FRONT_ORIGINS = [
-  "https://apimmadouglasfrontend-c5736.vercel.app/",
-  "https://apimmadouglasfrontend-a1em8bpf-joaos-projects-3bdc5736.vercel.app/",
-  "http://localhost:5173/",
-  "http://localhost:3000/"
+  "https://apimmadouglasfrontend-c5736.vercel.app",
+  "https://apimmadouglasfrontend-a1em8bpf-joaos-projects-3bdc5736.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:3000"
 ];
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Permite requisições sem origin (ex: Postman, curl)
       if (!origin) return callback(null, true);
 
       if (FRONT_ORIGINS.includes(origin)) {
@@ -29,7 +25,7 @@ app.use(
       }
 
       return callback(
-        new Error(Origin bloqueado pelo CORS: ${origin})
+        new Error(`Origin bloqueado pelo CORS: ${origin}`)
       );
     },
     credentials: true,
@@ -39,16 +35,14 @@ app.use(
   })
 );
 
-// Log opcional para debug de CORS
+// debug
 app.use((req, res, next) => {
-  console.log([CORS DEBUG] Method=${req.method} Origin=${req.get("Origin")});
+  console.log(`[CORS DEBUG] Method=${req.method} Origin=${req.get("Origin")}`);
   next();
 });
 
-// --------------------------------------------------------------------
 app.use(express.json());
 
-// Rotas
 app.get("/", (req, res) => {
   res.send("API MMA rodando! Veja a documentação em /api-docs");
 });
