@@ -8,7 +8,7 @@ const swaggerSpec: OpenAPIV3.Document = {
     description: "API para gerenciamento de lutadores, lutas e cards de MMA"
   },
   servers: [
-    { url: DATABASE_URL + "/api" }
+    { url: "https://apimmadouglasbackend.onrender.com//api" }
   ],
   paths: {
     "/lutadores": {
