@@ -11,7 +11,7 @@ const app = express();
 // ----------------------
 // 🔥 CORS Configuration
 // ----------------------
-const FRONT_ORIGIN = process.env.FRONT_ORIGIN || "https://apimadouglasfrontend-c5736.vercel.app";
+const FRONT_ORIGIN = process.env.FRONT_ORIGIN || "https://apimmadouglasfrontend-c5736.vercel.app";
 
 app.use(
   cors({
