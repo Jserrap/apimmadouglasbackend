@@ -12,7 +12,7 @@ const app = express();
 // ----------------------
 import cors from "cors";
 
-const FRONT_ORIGIN = process.env.FRONT_ORIGIN || "http://localhost:5173";
+const FRONT_ORIGIN = process.env.FRONT_ORIGIN || "https://apimmadouglasfrontend.vercel.app/";
 
 app.use(
   cors({
