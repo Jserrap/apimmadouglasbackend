@@ -1,70 +1,47 @@
 import express from "express";
-import lutadorRouter from "./routes/lutador_routes.js";
-import lutaRouter from "./routes/luta_routes.js";
-import cardRouter from "./routes/card_routes.js";
+import lutadorRouter from "./routes/lutador_routes";
+import lutaRouter from "./routes/luta_routes";
+import cardRouter from "./routes/card_routes";
 import swaggerUi from "swagger-ui-express";
-import swaggerSpec from "./swagger.js";
+import swaggerSpec from "./swagger";
 import cors from "cors";
 
 const app = express();
 
-// --------------------------------------------------------------------
-// CORS — Corrigido e aceitando qualquer deploy do Vercel
-// --------------------------------------------------------------------
-const LOCAL_WHITELIST = [
-  "http://localhost:5173",
-  "http://localhost:3000"
-];
+// ----------------------
+// 🔥 CORS Configuration
+// ----------------------
+const FRONT_ORIGIN = process.env.FRONT_ORIGIN || "https://apimmadouglasfrontend-c5736.vercel.app";
 
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Permite chamadas sem origin (Postman, Insomnia, Curl)
-      if (!origin) return callback(null, true);
-
-      // Aceita qualquer deployment Vercel do seu projeto
-      if (origin.startsWith("https://apimmadouglasfrontend")) {
-        return callback(null, true);
-      }
-
-      // Origens locais fixas
-      if (LOCAL_WHITELIST.includes(origin)) {
-        return callback(null, true);
-      }
-
-      // Caso contrário: bloqueia
-      return callback(
-        new Error(`Origin bloqueado pelo CORS: ${origin}`),
-        false
-      );
-    },
-
+    origin: FRONT_ORIGIN,
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    optionsSuccessStatus: 204,
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   })
 );
 
-// Habilita preflight OPTIONS para todas rotas
-app.options("*", cors());
-
-// Log opcional de CORS
+// Preflight handler
 app.use((req, res, next) => {
-  console.log(
-    `[CORS DEBUG] Method=${req.method} Origin=${req.get("Origin")}`
-  );
+  if (req.method === "OPTIONS") {
+    res.setHeader("Access-Control-Allow-Origin", FRONT_ORIGIN);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+    return res.sendStatus(204);
+  }
   next();
 });
 
-// --------------------------------------------------------------------
+// -------------------------
 app.use(express.json());
 
-// Rotas
 app.get("/", (req, res) => {
   res.send("API MMA rodando! Veja a documentação em /api-docs");
 });
 
+// Routes
 app.use("/api/lutadores", lutadorRouter);
 app.use("/api/lutas", lutaRouter);
 app.use("/api/cards", cardRouter);
