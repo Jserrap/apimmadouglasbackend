@@ -12,6 +12,7 @@ const app = express();
 // 🔥 CORS Configuration
 // ----------------------
 const allowedOrigins = [
+  "https://apimmadouglasbackend.onrender.com", // 🔥 Adicionar a URL do backend do Render
   "https://apimmadouglasfrontend-c5736.vercel.app",
   "http://localhost:3000"
 ];
