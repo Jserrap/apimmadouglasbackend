@@ -76,4 +76,3 @@ export default app;
 
 If it still doesn't work, the issue might be that Onrender needs environment variables set. Go to your Onrender dashboard and add:
 ```
-FRONT_ORIGIN=https://apimmadouglasfrontend-c5736.vercel.app
